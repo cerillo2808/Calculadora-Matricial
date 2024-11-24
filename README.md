@@ -35,7 +35,7 @@ Ninguna dependencia externa. Todo el código es autónomo.
 1. Navegar al directorio deseado y clonar el repositorio:
    ```bash
    git clone https://github.com/cerillo2808/Calculadora-Matricial.git
-   cd Calculadora_matricial
+   cd Calculadora-Matricial
 2. Abrir Visual Studio Community.
 3. Crear un nuevo proyecto en VS Community.
 4. Hacer click derecho sobre el nombre del nuevo proyecto, seleccionar la opción de Dependencia de compilación > Personalizaciones de compilación > MASM.
