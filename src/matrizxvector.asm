@@ -81,4 +81,33 @@ Escalamiento PROC
 
     ret
 Escalamiento ENDP
+
+; Función ensamblador: Traslación
+; Parámetros:
+;   RCX = tx (float) - Traslación en X
+;   RDX = ty (float) - Traslación en Y
+;   R8  = tz (float) - Traslación en Z
+;   R9  = Dirección de la matriz acumuladora (4x4 en fila mayor)
+
+Traslacion PROC
+    ; Cargar valores de traslación en registros SIMD
+    movss xmm0, dword ptr [rcx]          ; Cargar tx en xmm0
+    movss xmm1, dword ptr [rdx]          ; Cargar ty en xmm1
+    movss xmm2, dword ptr [r8]           ; Cargar tz en xmm2
+
+    ; Fila 1: actualizar posición [0][3] con tx
+    addss xmm0, dword ptr [r9 + 12]      ; tx + acumuladora[0][3]
+    movss dword ptr [r9 + 12], xmm0      ; Guardar el resultado en acumuladora[0][3]
+
+    ; Fila 2: actualizar posición [1][3] con ty
+    addss xmm1, dword ptr [r9 + 28]      ; ty + acumuladora[1][3]
+    movss dword ptr [r9 + 28], xmm1      ; Guardar el resultado en acumuladora[1][3]
+
+    ; Fila 3: actualizar posición [2][3] con tz
+    addss xmm2, dword ptr [r9 + 44]      ; tz + acumuladora[2][3]
+    movss dword ptr [r9 + 44], xmm2      ; Guardar el resultado en acumuladora[2][3]
+
+    ; Nota: Fila 4 ([3][3]) no se modifica porque es una traslación.
+    ret
+Traslacion ENDP
 END

@@ -5,9 +5,9 @@ using namespace std;
 
 extern "C" void MatrizxVector(float* matriz, float* vector, float* resultado);
 extern "C" void Escalamiento(float* escalaX, float* escalaY, float* escalaZ, float* matrizAcumuladora);
+extern "C" void Traslacion(float* traslacionX, float* traslacionY, float* traslacionZ, float* matrizAcumuladora);
 
 int preguntarTransformacion() {
-
     //variables
     string transformacion;
     string entrada;
@@ -39,11 +39,27 @@ int preguntarTransformacion() {
     cout << "[1] Traslacion\n[2] Rotacion\n[3] Escalamiento" << endl;
     getline(std::cin, transformacion);
 
-    //recorrer la entrada para ver si es una composicion
+    //recorrer la entrada para ver si es una composición
     for (size_t i = 0; i < transformacion.length(); i++) {
         if (transformacion[i] == '1') {
-            //traslacion
-            //TO-DO
+            // Traslación
+            float traslacionX, traslacionY, traslacionZ;
+
+            // Pedir valores de traslación
+            cout << "Ingrese la traslacion en X: ";
+            getline(cin, entrada);
+            traslacionX = stof(entrada);
+
+            cout << "Ingrese la traslacion en Y: ";
+            getline(cin, entrada);
+            traslacionY = stof(entrada);
+
+            cout << "Ingrese la traslacion en Z: ";
+            getline(cin, entrada);
+            traslacionZ = stof(entrada);
+
+            // Llamar a la función ensambladora para aplicar la traslación a la matriz acumuladora
+            Traslacion(&traslacionX, &traslacionY, &traslacionZ, matrizAcumuladora.data());
         }
         else if (transformacion[i] == '2') {
             //rotacion
@@ -111,17 +127,19 @@ int main() {
 
     bool repetir = true;
     string entrada;
+    
+        while (repetir) {
+            try {
+                preguntarTransformacion();
 
-    while (repetir) {
-
-        preguntarTransformacion();
-
-        cout << "Desea hacer otro calculo?\n[S] Si\n[N] No" << endl;
-        getline(std::cin, entrada);
-        if (entrada == "N" || entrada == "n") {
-            repetir = false;
+                cout << "Desea hacer otro calculo?\n[S] Si\n[N] No" << endl;
+                getline(std::cin, entrada);
+                if (entrada == "N" || entrada == "n") {
+                    repetir = false;
+                }
+            } catch (const exception &e) {
+                cerr << "Error, ha ingresado un dato inválido. Intente de nuevo." << endl;
+            }
         }
-    }
-
     return 0;
 }
