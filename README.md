@@ -31,7 +31,7 @@ Ninguna dependencia externa. Todo el código es autónomo.
 
 ---
 
-## Instalación
+## Compilación y ejecución
 1. Navegar al directorio deseado y clonar el repositorio:
    ```bash
    git clone https://github.com/cerillo2808/Calculadora-Matricial.git
