@@ -4,6 +4,7 @@
 using namespace std;
 
 extern "C" void MatrizxVector(float* matriz, float* vector, float* resultado);
+extern "C" void Escalamiento(float* escalaX, float* escalaY, float* escalaZ, float* matrizAcumuladora);
 
 int preguntarTransformacion() {
 
@@ -71,8 +72,24 @@ int preguntarTransformacion() {
             }
         }
         else if (transformacion[i] == '3') {
-            //escalamiento
-            //TO-DO
+            // Escalamiento
+            float escalaX, escalaY, escalaZ;
+
+            // Se piden los datos a escalar
+            cout << "Ingrese la escala en X: ";
+            getline(cin, entrada);
+            escalaX = stof(entrada);
+
+            cout << "Ingrese la escala en Y: ";
+            getline(cin, entrada);
+            escalaY = stof(entrada);
+
+            cout << "Ingrese la escala en Z: ";
+            getline(cin, entrada);
+            escalaZ = stof(entrada);
+
+            // Llamar a la función ensambladora para aplicar la escala directamente a la matriz acumuladora
+            Escalamiento(&escalaX, &escalaY, &escalaZ, matrizAcumuladora.data());
         }
         else {
             cout << "Error: ingrese una tranformacion valida." << endl;

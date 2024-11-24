@@ -1,13 +1,13 @@
-PUBLIC MatrizxVector
+PUBLIC MatrizxVector, Escalamiento
 EXTERN puts:PROC
 
 .code
 
-; Funci髇 ensamblador
-; Par醡etros:
-;   RCX = direcci髇 de la matriz (4x4 en fila mayor)
-;   RDX = direcci髇 del vector original (4x1)
-;   R8  = direcci髇 del vector resultado (4x1)
+; Funci贸n ensamblador
+; Par谩metros:
+;   RCX = direcci贸n de la matriz (4x4 en fila mayor)
+;   RDX = direcci贸n del vector original (4x1)
+;   R8  = direcci贸n del vector resultado (4x1)
 
 MatrizxVector PROC
     ; Cargar la matriz y el vector en registros SIMD
@@ -43,4 +43,42 @@ MatrizxVector PROC
 
     ret
 MatrizxVector ENDP
+
+; Funci贸n ensamblador: Escalamiento con multiplicaci贸n acumuladora
+; Par谩metros:
+;   RCX = escalaX (float)
+;   RDX = escalaY (float)
+;   R8  = escalaZ (float)
+;   R9  = direcci贸n de la matriz acumuladora (4x4 en fila mayor)
+
+Escalamiento PROC
+    ; Crear matriz de escalamiento en registros xmm
+    movss xmm0, dword ptr [rcx]          ; Cargar escalaX en xmm0
+    shufps xmm0, xmm0, 0h                ; Replicar escalaX en todos los componentes de xmm0
+    movss xmm1, dword ptr [rdx]          ; Cargar escalaY en xmm1
+    shufps xmm1, xmm1, 0h                ; Replicar escalaY en todos los componentes de xmm1
+    movss xmm2, dword ptr [r8]           ; Cargar escalaZ en xmm2
+    shufps xmm2, xmm2, 0h                ; Replicar escalaZ en todos los componentes de xmm2
+    movaps xmm3, xmmword ptr [r9 + 48]   ; Cargar 煤ltima fila (para preservar w)
+
+    ; Primera fila de la matriz acumuladora (escala X)
+    movaps xmm4, xmmword ptr [r9]        ; Cargar fila 1
+    mulps xmm4, xmm0                     ; Escalar con escalaX
+    movaps xmmword ptr [r9], xmm4        ; Guardar en acumuladora
+
+    ; Segunda fila de la matriz acumuladora (escala Y)
+    movaps xmm5, xmmword ptr [r9 + 16]   ; Cargar fila 2
+    mulps xmm5, xmm1                     ; Escalar con escalaY
+    movaps xmmword ptr [r9 + 16], xmm5   ; Guardar en acumuladora
+
+    ; Tercera fila de la matriz acumuladora (escala Z)
+    movaps xmm6, xmmword ptr [r9 + 32]   ; Cargar fila 3
+    mulps xmm6, xmm2                     ; Escalar con escalaZ
+    movaps xmmword ptr [r9 + 32], xmm6   ; Guardar en acumuladora
+
+    ; Cuarta fila de la matriz acumuladora (preservar w)
+    movaps xmmword ptr [r9 + 48], xmm3   ; Restaurar fila 4
+
+    ret
+Escalamiento ENDP
 END
