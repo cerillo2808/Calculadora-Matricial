@@ -1,11 +1,13 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <cmath>
 using namespace std;
 
 extern "C" void MatrizxVector(float* matriz, float* vector, float* resultado);
 extern "C" void Escalamiento(float* escalaX, float* escalaY, float* escalaZ, float* matrizAcumuladora);
 extern "C" void Traslacion(float* traslacionX, float* traslacionY, float* traslacionZ, float* matrizAcumuladora);
+extern "C" void Rotacion(float* sin_angle, float* cos_angle, int* eje, float* matrix);
 
 int preguntarTransformacion() {
     //variables
@@ -62,30 +64,39 @@ int preguntarTransformacion() {
             Traslacion(&traslacionX, &traslacionY, &traslacionZ, matrizAcumuladora.data());
         }
         else if (transformacion[i] == '2') {
-            //rotacion
 
+            // Angulo en grados.
+            float angulo_grados = 0.0f;
             cout << "Ingrese el angulo de la rotacion: ";
             getline(cin, entrada);
-            angulo = stof(entrada);
+            angulo_grados = stof(entrada);
 
+            // Convertir angulo a radianes
+            float angulo_rad = angulo_grados * 3.14159265359f / 180.0f;  // Use 3.14 for Pi
+
+            // Calcular seno y coseno del angulo
+            float sin_angulo = sin(angulo_rad);
+            float cos_angulo = cos(angulo_rad);
+
+            int eje = -1;
             cout << "Ingrese el eje de la rotacion: ";
             getline(cin, entrada);
             if (entrada == "X" || entrada == "x") {
-                //ejeX
-                //TO-DO
+                eje = 0;
             }
             else if (entrada == "Y" || entrada == "y") {
-                //eyeY
-                //TO-DO
+                eje = 1;
             }
             else if (entrada == "Z" || entrada == "z") {
-                //ejeZ
-                //TO-DO
+                eje = 2;
             }
             else {
                 cout << "Error: ingrese un eje valido." << endl;
                 return 1;
             }
+
+            // Llamar funcion en ensablador para formar matriz de rotacion.
+            Rotacion(&sin_angulo, &cos_angulo, &eje, matrizAcumuladora.data());
         }
         else if (transformacion[i] == '3') {
             // Escalamiento
@@ -127,19 +138,20 @@ int main() {
 
     bool repetir = true;
     string entrada;
-    
-        while (repetir) {
-            try {
-                preguntarTransformacion();
 
-                cout << "Desea hacer otro calculo?\n[S] Si\n[N] No" << endl;
-                getline(std::cin, entrada);
-                if (entrada == "N" || entrada == "n") {
-                    repetir = false;
-                }
-            } catch (const exception &e) {
-                cerr << "Error, ha ingresado un dato inválido. Intente de nuevo." << endl;
+    while (repetir) {
+        try {
+            preguntarTransformacion();
+
+            cout << "Desea hacer otro calculo?\n[S] Si\n[N] No" << endl;
+            getline(std::cin, entrada);
+            if (entrada == "N" || entrada == "n") {
+                repetir = false;
             }
         }
+        catch (const exception& e) {
+            cerr << "Error, ha ingresado un dato inválido. Intente de nuevo." << endl;
+        }
+    }
     return 0;
 }
