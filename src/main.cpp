@@ -64,7 +64,7 @@ int preguntarTransformacion() {
             Traslacion(&traslacionX, &traslacionY, &traslacionZ, matrizAcumuladora.data());
         }
         else if (transformacion[i] == '2') {
-
+            // rotacion
             // Angulo en grados.
             float angulo_grados = 0.0f;
             cout << "Ingrese el angulo de la rotacion: ";
@@ -72,7 +72,7 @@ int preguntarTransformacion() {
             angulo_grados = stof(entrada);
 
             // Convertir angulo a radianes
-            float angulo_rad = angulo_grados * 3.14159265359f / 180.0f;  // Use 3.14 for Pi
+            float angulo_rad = angulo_grados * 3.14159265359f / 180.0f;
 
             // Calcular seno y coseno del angulo
             float sin_angulo = sin(angulo_rad);
